@@ -90,10 +90,10 @@ export function BiryaniLeaderboard({
                     </TableCell>
                     <TableCell className="text-center py-3 px-4">
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => onGetRecommendation(restaurant)}
-                        className="text-accent-foreground hover:bg-accent/80"
+                        className="text-accent"
                         aria-label={`Get AI recommendation for ${restaurant.name}`}
                       >
                         <MessageSquareHeart className="mr-2 h-4 w-4" />
@@ -122,3 +122,4 @@ export function BiryaniLeaderboard({
     </Card>
   );
 }
+
