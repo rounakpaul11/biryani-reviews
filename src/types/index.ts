@@ -1,9 +1,10 @@
+
 export interface BiryaniRestaurant {
-  id: string;
+  id: string; // Will serve as S.No.
   name: string;
-  score: number;
+  address: string;
+  avgUserRating: number;
+  rounaksScore: number;
   description: string;
   review: string;
-  imageUrl: string;
-  dataAiHint: string;
 }

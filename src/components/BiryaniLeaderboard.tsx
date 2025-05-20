@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { BiryaniRestaurant } from '@/types';
@@ -12,12 +13,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUpDown, Award, MessageSquareHeart } from 'lucide-react';
-import Image from 'next/image';
 
 interface BiryaniLeaderboardProps {
   restaurants: BiryaniRestaurant[];
-  onSort: (column: keyof BiryaniRestaurant | 'score') => void;
-  sortColumn: keyof BiryaniRestaurant | 'score';
+  onSort: (column: keyof BiryaniRestaurant) => void;
+  sortColumn: keyof BiryaniRestaurant;
   sortDirection: 'asc' | 'desc';
   onGetRecommendation: (restaurant: BiryaniRestaurant) => void;
 }
@@ -29,7 +29,8 @@ export function BiryaniLeaderboard({
   sortDirection,
   onGetRecommendation,
 }: BiryaniLeaderboardProps) {
-  const renderSortIcon = (column: keyof BiryaniRestaurant | 'score') => {
+  const renderSortIcon = (column: keyof BiryaniRestaurant) => {
+    if (column === 'id' || column === 'address' || column === 'description' || column === 'review') return null; // No sort icon for non-sortable columns
     if (sortColumn === column) {
       return sortDirection === 'asc' ? '▲' : '▼';
     }
@@ -49,7 +50,7 @@ export function BiryaniLeaderboard({
           <Table>
             <TableHeader className="bg-muted/50">
               <TableRow>
-                <TableHead className="w-[80px] hidden sm:table-cell">Image</TableHead>
+                <TableHead className="w-[60px] text-center">S.No.</TableHead>
                 <TableHead
                   className="cursor-pointer hover:bg-muted transition-colors min-w-[200px]"
                   onClick={() => onSort('name')}
@@ -58,12 +59,21 @@ export function BiryaniLeaderboard({
                     Name {renderSortIcon('name')}
                   </div>
                 </TableHead>
+                <TableHead className="min-w-[250px]">Address</TableHead>
                 <TableHead
-                  className="cursor-pointer hover:bg-muted transition-colors text-right min-w-[100px]"
-                  onClick={() => onSort('score')}
+                  className="cursor-pointer hover:bg-muted transition-colors text-right min-w-[150px]"
+                  onClick={() => onSort('avgUserRating')}
                 >
                   <div className="flex items-center justify-end">
-                    Score {renderSortIcon('score')}
+                    Avg. User Rating {renderSortIcon('avgUserRating')}
+                  </div>
+                </TableHead>
+                <TableHead
+                  className="cursor-pointer hover:bg-muted transition-colors text-right min-w-[150px]"
+                  onClick={() => onSort('rounaksScore')}
+                >
+                  <div className="flex items-center justify-end">
+                    Rounak's Score {renderSortIcon('rounaksScore')}
                   </div>
                 </TableHead>
                 <TableHead className="text-center min-w-[150px]">AI Recommendation</TableHead>
@@ -71,21 +81,18 @@ export function BiryaniLeaderboard({
             </TableHeader>
             <TableBody>
               {restaurants.length > 0 ? (
-                restaurants.map((restaurant) => (
+                restaurants.map((restaurant, index) => (
                   <TableRow key={restaurant.id} className="hover:bg-muted/30 transition-colors">
-                    <TableCell className="hidden sm:table-cell p-2">
-                       <Image
-                        src={restaurant.imageUrl}
-                        alt={restaurant.name}
-                        width={60}
-                        height={40}
-                        className="rounded-md object-cover"
-                        data-ai-hint={restaurant.dataAiHint}
-                      />
-                    </TableCell>
+                    <TableCell className="text-center py-3 px-4">{index + 1}</TableCell>
                     <TableCell className="font-medium py-3 px-4">{restaurant.name}</TableCell>
+                    <TableCell className="py-3 px-4 text-xs text-muted-foreground truncate max-w-xs" title={restaurant.address}>
+                      {restaurant.address}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold py-3 px-4">
+                      {restaurant.avgUserRating.toFixed(1)}
+                    </TableCell>
                     <TableCell className="text-right font-semibold text-primary py-3 px-4">
-                      {restaurant.score.toFixed(1)}
+                      {restaurant.rounaksScore.toFixed(1)}
                     </TableCell>
                     <TableCell className="text-center py-3 px-4">
                       <Button
@@ -103,7 +110,7 @@ export function BiryaniLeaderboard({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
                     No restaurants match the current filter.
                   </TableCell>
                 </TableRow>

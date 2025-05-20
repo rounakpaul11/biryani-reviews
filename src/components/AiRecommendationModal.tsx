@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { BiryaniRestaurant } from '@/types';
@@ -10,8 +11,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles,ThumbsUp, ThumbsDown } from 'lucide-react';
-import Image from 'next/image';
+import { Loader2, Sparkles, ThumbsUp, ThumbsDown } from 'lucide-react';
+// Image import removed as it's no longer used
 
 interface AiRecommendationModalProps {
   isOpen: boolean;
@@ -39,25 +40,18 @@ export function AiRecommendationModal({
             AI Recommendation for {restaurant.name}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground pt-1">
-            Our AI analyzed the details to give you this insight. Score: <span className="font-semibold text-foreground">{restaurant.score}/10</span>
+            Rounak's Score: <span className="font-semibold text-foreground">{restaurant.rounaksScore}/10</span>. Avg User Rating: <span className="font-semibold text-foreground">{restaurant.avgUserRating}/10</span>.
           </DialogDescription>
         </DialogHeader>
         <div className="p-6 space-y-4">
-          <div className="flex items-center space-x-4">
-            <Image
-              src={restaurant.imageUrl}
-              alt={restaurant.name}
-              width={120}
-              height={80}
-              className="rounded-lg object-cover border border-border"
-              data-ai-hint={restaurant.dataAiHint}
-            />
-            <div>
-              <h3 className="text-lg font-semibold text-foreground">{restaurant.name}</h3>
-              <p className="text-xs text-muted-foreground italic line-clamp-2" title={restaurant.description}>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">{restaurant.name}</h3>
+            <p className="text-xs text-muted-foreground italic" title={restaurant.address}>
+              {restaurant.address}
+            </p>
+             <p className="text-xs text-muted-foreground mt-1 line-clamp-3" title={restaurant.description}>
                 {restaurant.description}
               </p>
-            </div>
           </div>
           
           <div className="border-t border-border pt-4">

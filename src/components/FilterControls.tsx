@@ -1,10 +1,11 @@
+
 "use client";
 
 import type { Dispatch, SetStateAction } from 'react';
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilterIcon } from 'lucide-react';
+import { ListFilter } from 'lucide-react'; // Changed icon
 
 interface FilterControlsProps {
   minScore: number;
@@ -17,7 +18,7 @@ export function FilterControls({ minScore, setMinScore, maxPossibleScore }: Filt
     <Card className="mb-6 shadow-lg">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center text-xl">
-          <FilterIcon className="mr-2 h-6 w-6 text-primary" />
+          <ListFilter className="mr-2 h-6 w-6 text-primary" /> 
           Filter Restaurants
         </CardTitle>
       </CardHeader>
@@ -25,7 +26,7 @@ export function FilterControls({ minScore, setMinScore, maxPossibleScore }: Filt
         <div className="grid gap-4">
           <div>
             <Label htmlFor="score-filter" className="text-base font-medium text-foreground/80">
-              Minimum Score: <span className="font-bold text-primary">{minScore.toFixed(1)}</span>
+              Minimum Rounak's Score: <span className="font-bold text-primary">{minScore.toFixed(1)}</span>
             </Label>
             <Slider
               id="score-filter"

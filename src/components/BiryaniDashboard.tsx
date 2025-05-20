@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -7,18 +8,18 @@ import { FilterControls } from './FilterControls';
 import { BiryaniLeaderboard } from './BiryaniLeaderboard';
 import { AiRecommendationModal } from './AiRecommendationModal';
 import { useToast } from "@/hooks/use-toast";
-import { ChefHat } from 'lucide-react';
+import { ChefHat, Utensils } from 'lucide-react';
 
 interface BiryaniDashboardProps {
   initialRestaurants: BiryaniRestaurant[];
 }
 
-const MAX_SCORE = 10;
+const MAX_SCORE = 10; // This refers to Rounak's Score and Avg User Rating max
 
 export function BiryaniDashboard({ initialRestaurants }: BiryaniDashboardProps) {
   const [restaurants, setRestaurants] = useState<BiryaniRestaurant[]>(initialRestaurants);
-  const [minScore, setMinScore] = useState<number>(0);
-  const [sortColumn, setSortColumn] = useState<keyof BiryaniRestaurant | 'score'>('score');
+  const [minScore, setMinScore] = useState<number>(0); // This will filter by Rounak's Score
+  const [sortColumn, setSortColumn] = useState<keyof BiryaniRestaurant>('rounaksScore');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const [selectedRestaurant, setSelectedRestaurant] = useState<BiryaniRestaurant | null>(null);
@@ -29,20 +30,26 @@ export function BiryaniDashboard({ initialRestaurants }: BiryaniDashboardProps) 
   const { toast } = useToast();
 
   const filteredAndSortedRestaurants = useMemo(() => {
-    let result = initialRestaurants.filter(r => r.score >= minScore);
+    let result = initialRestaurants.filter(r => r.rounaksScore >= minScore);
 
     result.sort((a, b) => {
       let valA, valB;
       if (sortColumn === 'name') {
         valA = a.name.toLowerCase();
         valB = b.name.toLowerCase();
-      } else { // score or any other numeric column
-        valA = a[sortColumn as 'score']; // Ensure type safety for numeric properties
-        valB = b[sortColumn as 'score'];
+      } else if (sortColumn === 'rounaksScore' || sortColumn === 'avgUserRating') {
+        valA = a[sortColumn];
+        valB = b[sortColumn];
+      } else { // For address or id - though sorting by them might not be primary
+        valA = String(a[sortColumn]).toLowerCase();
+        valB = String(b[sortColumn]).toLowerCase();
       }
 
       if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
       if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+      // Secondary sort by name if primary sort values are equal
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
       return 0;
     });
 
@@ -53,12 +60,16 @@ export function BiryaniDashboard({ initialRestaurants }: BiryaniDashboardProps) 
     setRestaurants(filteredAndSortedRestaurants);
   }, [filteredAndSortedRestaurants]);
 
-  const handleSort = (column: keyof BiryaniRestaurant | 'score') => {
+  const handleSort = (column: keyof BiryaniRestaurant) => {
+    if (column === 'id' || column === 'address' || column === 'description' || column === 'review') { // Columns not meant for primary sorting
+      // Optionally, do nothing or keep current sort
+      return;
+    }
     if (sortColumn === column) {
       setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
     } else {
       setSortColumn(column);
-      setSortDirection('desc'); // Default to descending for new column
+      setSortDirection('desc'); 
     }
   };
 
@@ -73,12 +84,12 @@ export function BiryaniDashboard({ initialRestaurants }: BiryaniDashboardProps) 
         restaurantName: restaurant.name,
         description: restaurant.description,
         review: restaurant.review,
-        score: restaurant.score,
+        rounaksScore: restaurant.rounaksScore,
       });
       setAiRecommendation(result.recommendationSummary);
     } catch (error) {
       console.error("AI Recommendation Error:", error);
-      setAiRecommendation(null); // Keep it null or set an error message
+      setAiRecommendation(null);
       toast({
         title: "Error",
         description: "Failed to get AI recommendation. Please try again.",
@@ -94,7 +105,7 @@ export function BiryaniDashboard({ initialRestaurants }: BiryaniDashboardProps) 
       <header className="mb-10 text-center">
         <h1 className="text-5xl font-extrabold tracking-tight text-primary flex items-center justify-center">
           <ChefHat className="mr-3 h-12 w-12" />
-          Biryani Vista
+          Rounak's Biryani Review
         </h1>
         <p className="mt-2 text-xl text-muted-foreground">
           Discover the Best Biryani Spots with AI-Powered Insights
@@ -124,8 +135,11 @@ export function BiryaniDashboard({ initialRestaurants }: BiryaniDashboardProps) 
       />
       
       <footer className="mt-12 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} Biryani Vista. All rights reserved.</p>
-        <p>Savor the flavor, one biryani at a time.</p>
+        <p>&copy; {new Date().getFullYear()} Rounak's Biryani Review. All rights reserved.</p>
+        <p className="flex items-center justify-center">
+          <Utensils className="mr-2 h-4 w-4" />
+          Savor the flavor, one biryani at a time.
+        </p>
       </footer>
     </div>
   );
