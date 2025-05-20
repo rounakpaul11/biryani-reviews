@@ -59,15 +59,6 @@ export function BiryaniLeaderboard({
                     Name {renderSortIcon('name')}
                   </div>
                 </TableHead>
-                <TableHead className="min-w-[250px]">Address</TableHead>
-                <TableHead
-                  className="cursor-pointer hover:bg-muted transition-colors text-right min-w-[150px]"
-                  onClick={() => onSort('avgUserRating')}
-                >
-                  <div className="flex items-center justify-end">
-                    Avg. User Rating {renderSortIcon('avgUserRating')}
-                  </div>
-                </TableHead>
                 <TableHead
                   className="cursor-pointer hover:bg-muted transition-colors text-right min-w-[150px]"
                   onClick={() => onSort('rounaksScore')}
@@ -77,6 +68,15 @@ export function BiryaniLeaderboard({
                   </div>
                 </TableHead>
                 <TableHead className="text-center min-w-[150px]">AI Recommendation</TableHead>
+                <TableHead
+                  className="cursor-pointer hover:bg-muted transition-colors text-right min-w-[150px]"
+                  onClick={() => onSort('avgUserRating')}
+                >
+                  <div className="flex items-center justify-end">
+                    Avg. User Rating {renderSortIcon('avgUserRating')}
+                  </div>
+                </TableHead>
+                <TableHead className="min-w-[250px]">Address</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -85,12 +85,6 @@ export function BiryaniLeaderboard({
                   <TableRow key={restaurant.id} className="hover:bg-muted/30 transition-colors">
                     <TableCell className="text-center py-3 px-4">{index + 1}</TableCell>
                     <TableCell className="font-medium py-3 px-4">{restaurant.name}</TableCell>
-                    <TableCell className="py-3 px-4 text-xs text-muted-foreground truncate max-w-xs" title={restaurant.address}>
-                      {restaurant.address}
-                    </TableCell>
-                    <TableCell className="text-right font-semibold py-3 px-4">
-                      {restaurant.avgUserRating.toFixed(1)}
-                    </TableCell>
                     <TableCell className="text-right font-semibold text-primary py-3 px-4">
                       {restaurant.rounaksScore.toFixed(1)}
                     </TableCell>
@@ -105,6 +99,12 @@ export function BiryaniLeaderboard({
                         <MessageSquareHeart className="mr-2 h-4 w-4" />
                         Suggest
                       </Button>
+                    </TableCell>
+                    <TableCell className="text-right font-semibold py-3 px-4">
+                      {restaurant.avgUserRating.toFixed(1)}
+                    </TableCell>
+                    <TableCell className="py-3 px-4 text-xs text-muted-foreground truncate max-w-xs" title={restaurant.address}>
+                      {restaurant.address}
                     </TableCell>
                   </TableRow>
                 ))
